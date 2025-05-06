@@ -12,12 +12,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-py-modules = [
-    "idea",
-    "user",
-    "common",
-    "credit",
-    "code",
-    "paper",
-    "project"
-] 
+packages = ["schema_manager"] 
