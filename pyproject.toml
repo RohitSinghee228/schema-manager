@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "schema_manager"
+version = "0.1.0"
+description = "Central schema definitions for IdeaVerse services"
+requires-python = ">=3.8"
+dependencies = [
+    "pydantic",
+]
+
+[tool.setuptools]
+py-modules = [
+    "idea",
+    "user",
+    "common",
+    "credit",
+    "code",
+    "paper",
+    "project"
+] 
