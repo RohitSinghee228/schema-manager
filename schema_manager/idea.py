@@ -1,6 +1,24 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Union
 import uuid
+from datetime import datetime
+
+class SimilarPaper(BaseModel):
+    """Schema for similar paper information."""
+    title: str = Field(description="Title of the paper")
+    abstract: Optional[str] = Field(description="Abstract of the paper")
+    authors: List[str] = Field(default_factory=list, description="List of authors")
+    year: Optional[int] = Field(description="Publication year")
+    source: str = Field(description="Source of the paper (e.g., 'arXiv', 'Semantic Scholar', 'Journal')")
+    source_url: str = Field(description="URL to the paper in its source")
+    journal: Optional[str] = Field(description="Journal name if published in a journal")
+    doi: Optional[str] = Field(description="Digital Object Identifier if available")
+    semantic_similarity: float = Field(description="Semantic similarity score with the generated idea")
+    citations: Optional[int] = Field(description="Number of citations")
+    venue: Optional[str] = Field(description="Conference or journal venue")
+    keywords: List[str] = Field(default_factory=list, description="Keywords associated with the paper")
+    pdf_url: Optional[str] = Field(description="Direct link to PDF if available")
+    icon: Optional[str] = Field(description="Icon URL for the source (e.g., arXiv logo, journal logo)")
 
 class IdeaGenerationTask(BaseModel):
     task_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -22,7 +40,7 @@ class IdeaResponse(BaseModel):
     ideas: List[Dict] = []
     reflection_rounds: int = 1
     error: Optional[str] = None
-
+    similar_papers: Optional[List[SimilarPaper]] = Field(default_factory=list, description="List of similar papers with comprehensive information")
 
 class IdeaPromptSchema(BaseModel):
     Name: str = Field(description="The unique name for the idea.")
@@ -31,7 +49,6 @@ class IdeaPromptSchema(BaseModel):
     Interestingness: float = Field(description="How interesting the idea is.")
     Feasibility: float = Field(description="Feasibility rating (1-10 or qualitative).")
     Novelty: float = Field(description="Novelty rating (1-10 or qualitative).")
-
 
 class IdeaTasksResponse(BaseModel):
     id: str
@@ -48,3 +65,4 @@ class IdeaTasksResponse(BaseModel):
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
     is_public: Optional[bool] = None
+    similar_papers: Optional[List[SimilarPaper]] = Field(default_factory=list, description="List of similar papers with comprehensive information")
