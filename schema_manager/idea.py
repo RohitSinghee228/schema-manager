@@ -40,6 +40,8 @@ class IdeaResponse(BaseModel):
     ideas: List[Dict] = []
     reflection_rounds: int = 1
     error: Optional[str] = None
+    tags: Optional[List[str]] = None
+    metadata: Optional[dict] = None
     similar_papers: Optional[List[SimilarPaper]] = Field(default_factory=list, description="List of similar papers with comprehensive information")
 
 class IdeaPromptSchema(BaseModel):
