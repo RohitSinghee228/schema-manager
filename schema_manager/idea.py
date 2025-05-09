@@ -51,6 +51,14 @@ class IdeaPromptSchema(BaseModel):
     Interestingness: float = Field(description="How interesting the idea is.")
     Feasibility: float = Field(description="Feasibility rating (1-10 or qualitative).")
     Novelty: float = Field(description="Novelty rating (1-10 or qualitative).")
+    description: str = Field(description="A comprehensive description that explains the research idea in detail.")
+    implementation_steps: List[str] = Field(default_factory=list, description="Detailed step-by-step implementation plan.")
+    expected_outcomes: List[str] = Field(default_factory=list, description="Expected results and outcomes of the idea.")
+    potential_challenges: List[str] = Field(default_factory=list, description="Potential obstacles and challenges.")
+    mitigation_strategies: List[str] = Field(default_factory=list, description="Strategies to overcome the potential challenges.")
+    scientific_merit: float = Field(description="Scientific contribution value (between 0.0 and 1.0).")
+    innovation_level: float = Field(description="Level of innovation and novelty (between 0.0 and 1.0).")
+    thought: Optional[str] = Field(description="Thought process behind developing this idea.")
 
 class IdeaTasksResponse(BaseModel):
     id: str
