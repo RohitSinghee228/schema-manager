@@ -20,37 +20,20 @@ class SimilarPaper(BaseModel):
     pdf_url: Optional[str] = Field(description="Direct link to PDF if available")
     icon: Optional[str] = Field(description="Icon URL for the source (e.g., arXiv logo, journal logo)")
 
-class IdeaGenerationTask(BaseModel):
-    task_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: Optional[str] = "unknown"
-    task_description: str
-    code: Optional[str] = ""
-    num_ideas: int
-    num_reflections: int = 2
-    prev_ideas: Optional[List[Dict]] = []
-    seed_ideas: Optional[List[Dict]] = []
-    system_prompt: Optional[str] = ""
-
-class IdeaResponse(BaseModel):
-    task_id: str
-    user_id: str
-    status: str
-    task_description: str = ""
-    thought: str = ""
-    ideas: List[Dict] = []
-    reflection_rounds: int = 1
-    error: Optional[str] = None
-    tags: Optional[List[str]] = None
-    metadata: Optional[dict] = None
-    similar_papers: Optional[List[SimilarPaper]] = Field(default_factory=list, description="List of similar papers with comprehensive information")
-
-class IdeaPromptSchema(BaseModel):
-    Name: str = Field(description="The unique name for the idea.")
-    Title: str = Field(description="A brief title for the idea.")
-    Experiment: str = Field(description="Description of the experimental approach.")
-    Interestingness: float = Field(description="How interesting the idea is.")
-    Feasibility: float = Field(description="Feasibility rating (1-10 or qualitative).")
-    Novelty: float = Field(description="Novelty rating (1-10 or qualitative).")
+class FollowUpQuestion(BaseModel):
+    """Schema for follow-up questions to clarify an idea."""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    question: str = Field(description="The follow-up question to ask")
+    answer: str = Field(description="The answer to the follow-up question")
+    
+class IdeaSchema(BaseModel):
+    """Schema for an individual idea."""
+    name: str = Field(description="The unique name for the idea.")
+    title: str = Field(description="A brief title for the idea.")
+    experiment: str = Field(description="Description of the experimental approach.")
+    interestingness: float = Field(description="How interesting the idea is.")
+    feasibility: float = Field(description="Feasibility rating (1-10 or qualitative).")
+    novelty: float = Field(description="Novelty rating (1-10 or qualitative).")
     description: str = Field(description="A comprehensive description that explains the research idea in detail.")
     implementation_steps: List[str] = Field(default_factory=list, description="Detailed step-by-step implementation plan.")
     expected_outcomes: List[str] = Field(default_factory=list, description="Expected results and outcomes of the idea.")
@@ -60,19 +43,39 @@ class IdeaPromptSchema(BaseModel):
     innovation_level: float = Field(description="Level of innovation and novelty (between 0.0 and 1.0).")
     thought: Optional[str] = Field(description="Thought process behind developing this idea.")
 
-class IdeaTasksResponse(BaseModel):
-    id: str
-    task_id: str
-    user_id: str
-    status: str
-    task_description: str
-    thought: Optional[str] = None
-    ideas: Optional[List[Dict]] = None
-    reflection_rounds: Optional[int] = None
-    error: Optional[str] = None
-    tags: Optional[List[str]] = None
-    metadata: Optional[dict] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    is_public: Optional[bool] = None
-    similar_papers: Optional[List[SimilarPaper]] = Field(default_factory=list, description="List of similar papers with comprehensive information")
+class IdeaTask(BaseModel):
+    """Unified schema for idea generation tasks and responses."""
+    # Core identifiers
+    id: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()), description="Unique identifier for the task")
+    task_id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="Task identifier")
+    user_id: str = Field(default="unknown", description="User identifier")
+    
+    # Task information
+    task_description: str = Field(description="Description of the task")
+    code: Optional[str] = Field(default="", description="Related code if applicable")
+    num_ideas: Optional[int] = Field(default=1, description="Number of ideas to generate")
+    num_reflections: Optional[int] = Field(default=2, description="Number of reflection rounds")
+    
+    # Status and content
+    status: Optional[str] = Field(description="Current status of the task")
+    thought: Optional[str] = Field(default=None, description="Thought process")
+    ideas: Optional[List[Dict]] = Field(default_factory=list, description="Generated ideas")
+    prev_ideas: Optional[List[Dict]] = Field(default_factory=list, description="Previous ideas")
+    seed_ideas: Optional[List[Dict]] = Field(default_factory=list, description="Seed ideas")
+    
+    # System information
+    system_prompt: Optional[str] = Field(default="", description="System prompt used")
+    error: Optional[str] = Field(default=None, description="Error message if any")
+    
+    # Metadata
+    tags: Optional[List[str]] = Field(default_factory=list, description="Tags associated with the task")
+    metadata: Optional[dict] = Field(default_factory=dict, description="Additional metadata")
+    created_at: Optional[datetime] = Field(default_factory=datetime.now, description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(default_factory=datetime.now, description="Last update timestamp")
+    is_public: Optional[bool] = Field(default=False, description="Whether the task is public")
+    
+    # Related information
+    similar_papers: Optional[List[SimilarPaper]] = Field(default_factory=list, description="List of similar papers")
+    follow_up_questions: Optional[List[FollowUpQuestion]] = Field(default_factory=list, description="Follow-up questions")
+    
+    reflection_rounds: Optional[int] = Field(default=None, description="Number of reflection rounds completed")
