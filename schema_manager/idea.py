@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from typing import Optional, List, Dict, Union
 import uuid
 from datetime import datetime
@@ -31,17 +31,49 @@ class IdeaSchema(BaseModel):
     name: str = Field(description="The unique name for the idea.")
     title: str = Field(description="A brief title for the idea.")
     experiment: str = Field(description="Description of the experimental approach.")
-    interestingness: float = Field(description="How interesting the idea is.")
-    feasibility: float = Field(description="Feasibility rating (1-10 or qualitative).")
-    novelty: float = Field(description="Novelty rating (1-10 or qualitative).")
     description: str = Field(description="A comprehensive description that explains the research idea in detail.")
     implementation_steps: List[str] = Field(default_factory=list, description="Detailed step-by-step implementation plan.")
     expected_outcomes: List[str] = Field(default_factory=list, description="Expected results and outcomes of the idea.")
     potential_challenges: List[str] = Field(default_factory=list, description="Potential obstacles and challenges.")
     mitigation_strategies: List[str] = Field(default_factory=list, description="Strategies to overcome the potential challenges.")
+    thought: Optional[str] = Field(description="Thought process behind developing this idea.")
+    # Scores and their justifications
+    novelty: Dict[str, Union[float, str]] = Field(
+        default_factory=lambda: {"score": 0.0, "justification": ""},
+        description="Novelty rating (1-10) and justification text"
+    )
+    feasibility: Dict[str, Union[float, str]] = Field(
+        default_factory=lambda: {"score": 0.0, "justification": ""},
+        description="Feasibility rating (1-10) and justification text"
+    )
+    impact: Dict[str, Union[float, str]] = Field(
+        default_factory=lambda: {"score": 0.0, "justification": ""},
+        description="Impact rating (1-10) and justification text"
+    )
+    acceptance_probability: Dict[str, Union[float, str]] = Field(
+        default_factory=lambda: {"score": 0.0, "justification": ""},
+        description="Acceptance probability rating (1-10) and justification text"
+    )
+    # Ratings
+    interestingness: float = Field(description="How interesting the idea is.")
     scientific_merit: float = Field(description="Scientific contribution value (between 0.0 and 1.0).")
     innovation_level: float = Field(description="Level of innovation and novelty (between 0.0 and 1.0).")
-    thought: Optional[str] = Field(description="Thought process behind developing this idea.")
+    # Papers
+    similar_papers: List[SimilarPaper] = Field(default_factory=list, description="List of similar papers.")
+    # Reflection rounds
+    reflection_rounds: List[Dict[str, Union[float, str]]] = Field(
+        default_factory=list,
+        description="List of reflection rounds with round number and the idea after the reflection"
+    )
+    # Validators
+    @validator('scientific_merit', 'innovation_level')
+    def check_score_range(cls, v):
+        """Validate that scores are within the 0-1 range."""
+        if v < 0.0 or v > 1.0:
+            return max(0.0, min(v, 1.0))  # Clamp between 0 and 1
+        return v
+
+
 
 class IdeaTask(BaseModel):
     """Unified schema for idea generation tasks and responses."""
