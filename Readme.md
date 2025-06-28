@@ -7,11 +7,9 @@ The Schema Manager is a central repository for Pydantic data schemas used across
 ### idea.py
 - `SimilarPaper`: Schema for similar paper information
 - `FollowUpQuestion`: Schema for follow-up questions to clarify an idea
-- `FollowUpAnswer`: Schema for answers to follow-up questions
-- `IdeaGenerationTask`: Schema for idea generation task requests
-- `IdeaResponse`: Schema for idea generation responses
-- `IdeaPromptSchema`: Schema for idea prompt formatting
-- `IdeaTasksResponse`: Schema for idea task listing responses
+- `IdeaTask`: Schema for idea generation task requests
+- 
+
 
 ### user.py
 - `UserBase`: Base schema for user data

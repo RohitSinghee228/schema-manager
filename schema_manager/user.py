@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Dict, List, Optional, Union
 
-from beanie import PydanticObjectId
 from pydantic import BaseModel, EmailStr, Field, validator
 
 
@@ -32,6 +31,15 @@ class UserCreate(UserBase):
         if not any(c.isdigit() for c in v):
             raise ValueError('Password must contain at least one number')
         return v
+
+
+class SocialUserCreate(UserBase):
+    """Schema for creating a user via social login.
+    Password is optional because social logins may not provide one.
+    """
+
+    password: Optional[str] = None
+    social_provider: Optional[str] = None
 
 
 class UserUpdate(BaseModel):
