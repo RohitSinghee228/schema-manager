@@ -37,6 +37,8 @@ class IdeaSchema(BaseModel):
     potential_challenges: List[str] = Field(default_factory=list, description="Potential obstacles and challenges.")
     mitigation_strategies: List[str] = Field(default_factory=list, description="Strategies to overcome the potential challenges.")
     thought: Optional[str] = Field(description="Thought process behind developing this idea.")
+    feedback_rating: Optional[float] = Field(description="Feedback rating for the idea.")
+    feedback_subjective: Optional[str] = Field(description="Feedback subjectivity for the idea.")
     # Scores and their justifications
     novelty: Dict[str, Union[float, str]] = Field(
         default_factory=lambda: {"score": 0.0, "justification": ""},
