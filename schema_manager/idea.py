@@ -95,8 +95,8 @@ class IdeaTask(BaseModel):
     
     # Task information
     task_description: str = Field(description="Description of the task")
+    num_ideas: int = Field(description="Number of ideas to generate")
     code: Optional[str] = Field(default="", description="Related code if applicable")
-    num_ideas: Optional[int] = Field(default=1, description="Number of ideas to generate")
     num_reflections: Optional[int] = Field(default=2, description="Number of reflection rounds")
     
     # Status and content
